@@ -1,0 +1,40 @@
+{% extends 'library/base_generic.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-3">Borrowed Books for {{ user.username }}</h3>
+
+    {% if borrowed_books %}
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Book Title</th>
+                <th>Borrowed On</th>
+                <th>Return Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for record in borrowed_books %}
+            <tr>
+                <td>{{ record.book.title }}</td>
+                <td>{{ record.borrow_date }}</td>
+                <td>{{ record.return_date|default:"-" }}</td>
+                <td>
+                    {% if record.is_returned %}
+                        <span class="badge bg-success">Returned</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Borrowed</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">This user has not borrowed any books.</p>
+    {% endif %}
+
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mt-3">← Back to Admin Dashboard</a>
+</div>
+{% endblock %}

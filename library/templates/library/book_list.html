@@ -1,0 +1,71 @@
+{% extends 'library/base_generic.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📚 Book List</h2>
+        {% if user.is_authenticated and user.is_staff %}
+            <a href="{% url 'add_book' %}" class="btn btn-primary shadow-sm">
+                <i class="fa fa-plus-circle me-1"></i> Add Book
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="table-responsive shadow-sm">
+        <table class="table table-hover align-middle text-center table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Available Copies</th>
+                    {% if user.is_authenticated and user.is_staff %}
+                        <th>Actions</th>
+                    {% elif user.is_authenticated %}
+                        <th>Borrow</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td class="fw-semibold">{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>
+                        {% if book.available_copies > 0 %}
+                            <span class="badge bg-success">{{ book.available_copies }}</span>
+                        {% else %}
+                            <span class="badge bg-danger">0</span>
+                        {% endif %}
+                    </td>
+
+                    {% if user.is_authenticated and user.is_staff %}
+                        <td>
+                            <a href="{% url 'edit_book' book.id %}" class="btn btn-sm btn-outline-warning me-1">
+                                <i class="fa fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'delete_book' book.id %}" class="btn btn-sm btn-outline-danger">
+                                <i class="fa fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    {% elif user.is_authenticated %}
+                        <td>
+                            {% if book.available_copies > 0 %}
+                                <a href="{% url 'borrow_book' book.id %}" class="btn btn-sm btn-outline-success">
+                                    <i class="fa fa-book-reader"></i> Borrow
+                                </a>
+                            {% else %}
+                                <span class="text-danger fw-bold">Not Available</span>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No books available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

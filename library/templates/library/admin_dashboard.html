@@ -1,0 +1,48 @@
+{% extends 'library/base_generic.html' %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<div class="row text-center mb-4">
+    <!-- <div class="col-md-3">
+        <div class="card bg-light shadow-sm p-3">
+            <h4>Total Books</h4>
+            <p class="display-6">{{ total_books }}</p>
+        </div>
+    </div> -->
+    <div class="col-md-3">
+        <div class="card bg-light shadow-sm p-3">
+            <h4>Total Users</h4>
+            <p class="display-6">{{ total_users }}</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light shadow-sm p-3">
+            <h4>Books Borrowed</h4>
+            <p class="display-6">{{ total_borrowed }}</p>
+        </div>
+    </div>
+     
+</div>
+
+<hr>
+
+<h4>Users Who Borrowed Books</h4>
+<ul class="list-group">
+    {% for user in users_with_borrows %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{% url 'user_borrowed_books' user.id  %}">
+            {{ user.username }}
+        </a>
+        <span class="text-muted small">{{ user.email }}</span>
+    </li>
+
+    {% empty %}
+    <li class="list-group-item">No users have borrowed books yet.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'book_list' %}" class="btn btn-primary mt-4">
+    <i class="fas fa-arrow-left me-2"></i>Back to Book List
+</a>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'library/base_generic.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center mt-5">
+    <div class="card shadow border-0 w-50">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h4>
+        </div>
+        <div class="card-body">
+            <p class="fs-5">Are you sure you want to delete the book <strong>"{{ book.title }}"</strong>?</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Yes, Delete
+                    </button>
+                    <a href="{% url 'book_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

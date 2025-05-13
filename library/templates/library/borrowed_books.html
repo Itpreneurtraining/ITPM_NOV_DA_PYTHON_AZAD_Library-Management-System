@@ -1,0 +1,73 @@
+{% extends 'library/base_generic.html' %}
+
+{% block content %}
+{% if messages %}
+<div class="alert-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+<div class="container mt-4">
+    <h3 class="mb-4">My Borrowed Books</h3>
+
+    {% if borrowed_books %}
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Book Title</th>
+                <th>Borrowed On</th>
+                <th>Due Date</th>
+                <th>Returned On</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in borrowed_books %}
+            <tr>
+                <td>{{ record.book.title }}</td>
+                <td>{{ record.borrow_date }}</td>
+                <td>{{ record.return_date|default:"-" }}</td>
+                <td>{{ record.actual_return_date|default:"Not Returned" }}</td>
+                <td>
+                    {% if record.is_returned %}
+                    <span class="badge bg-success">Returned</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">Borrowed</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not record.is_returned %}
+                    <a href="{% url 'return_book' record.id %}" class="btn btn-sm btn-outline-danger">Return</a>
+                    {% else %}
+                    <span class="text-muted">N/A</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">You have not borrowed any books.</p>
+    {% endif %}
+
+    <a href="{% url 'book_list' %}" class="btn btn-secondary mt-3">← Back to books</a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if messages %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    for (message in messages )
+    Swal.fire({
+      icon: "{% if 'success' in message.tags %}success{% elif 'warning' in message.tags %}warning{% elif 'error' in message.tags or 'danger' in message.tags %}error{% else %}info{% endif %}",
+      title: "{{ message|escapejs }}",
+      timer: 3000,
+      showConfirmButton: false
+    });
+    endfor 
+  });
+</script>
+{% endif %}
+{% endblock %}
